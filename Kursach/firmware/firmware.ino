@@ -27,34 +27,12 @@ void loop() {
     delay(100);
     DHT_Response = readDHTSensors();
     manageLED(DHT_Response.ERR_LED_PIN, DHT_Response.ErrorState);
-    Serial.print("DHT: 1.  ");
-    Serial.print(DHT_Response.data1);
-    Serial.print(" 2.  ");
-    Serial.print(DHT_Response.data2);
-        Serial.print("  ");
-    Serial.print(DHT_Response.ErrorState);
-    Serial.println(); 
     BMP_Response = readBMPSensors();
     manageLED(BMP_Response.ERR_LED_PIN, BMP_Response.ErrorState);
-    Serial.print("BMP: 1.  ");
-    Serial.print(BMP_Response.data1); 
-    Serial.print(" 2.  ");
-    Serial.print(BMP_Response.data2);
-    Serial.println(); 
     Anemo_Response = readAnemometers();
     manageLED(Anemo_Response.ERR_LED_PIN, Anemo_Response.ErrorState);
-    Serial.print("Anemo: 1.  ");
-    Serial.print(Anemo_Response.data1);
-    Serial.print(" 2.  ");
-    Serial.print(Anemo_Response.data2);
-    Serial.println(); 
     Reed_Response = readReedSwitches();
     manageLED(Reed_Response.ERR_LED_PIN, Reed_Response.ErrorState);
-    Serial.print("Reed: 1.  ");
-    Serial.print(Reed_Response.data1);
-    Serial.print(" 2.  ");
-    Serial.print(Reed_Response.data2);
-    Serial.println(); 
 
     if (canOpenRoof() == false)
     {
@@ -91,15 +69,13 @@ void manageLED(short int PIN, short int errorState) {
 }
 
 bool canOpenRoof() {
-    // Проверка на NAN
     bool DHT_NAN = isnan(DHT_Response.data1) && isnan(DHT_Response.data2);
     bool BMP_NAN = isnan(BMP_Response.data1) && isnan(BMP_Response.data2);
     bool Anemo_NAN = isnan(Anemo_Response.data1) && isnan(Anemo_Response.data2);
     bool Reed_NAN = isnan(Reed_Response.data1) && isnan(Reed_Response.data2);
 
-    // Если хотя бы один датчик имеет оба значения NAN
     if (DHT_NAN || BMP_NAN || Anemo_NAN || Reed_NAN) {
-        return false; // Нельзя открывать крышу
+        return false; 
     }
 
     if(DHT_Response.ErrorRate > DIFFERENCE_THRESHOLD || BMP_Response.ErrorRate > DIFFERENCE_THRESHOLD || 
@@ -107,16 +83,13 @@ bool canOpenRoof() {
           return false;
         }
 
-    // Проверка значений для каждого датчика
     float dht_value = DHT_NAN ? DHT_Response.data2 : DHT_Response.data1;
     float bmp_value = BMP_NAN ? BMP_Response.data2 : BMP_Response.data1;
     float anemo_value = Anemo_NAN ? Anemo_Response.data2 : Anemo_Response.data1;
 
-    // Здесь можно добавить дополнительные условия для проверки значений
-    // Например, если значение ниже определенного порога
     if (dht_value > 85 || bmp_value < 950 || anemo_value > 54) {
         return false; 
     }
 
-    return true; // Можно открывать крышу
+    return true; 
 }

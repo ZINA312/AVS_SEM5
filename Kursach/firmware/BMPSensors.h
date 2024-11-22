@@ -18,8 +18,7 @@ void setupBMPSensors() {
     bmp1.begin();
 
     digitalWrite(BMP_SELECT_PIN, LOW);
-    bmp2.begin();
-    
+    bmp2.begin();   
 }
 
 response readBMPSensors() {
@@ -53,11 +52,11 @@ response readBMPSensors() {
             resp.data2 = P2; 
         }
     }
-    if(status1 == 0){
+    if (status1 == 0){
       sensor1Failed = true;
       resp.data1 = NAN;
     }
-    if(status2 == 0){
+    if (status2 == 0){
       sensor2Failed = true;
       resp.data2 = NAN;
     }

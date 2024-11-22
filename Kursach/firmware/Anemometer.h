@@ -3,8 +3,8 @@
 
 #include <FreqCount.h>
 #include "response_struct.h"
-#define ANEMO_SELECT_PIN 2
 
+#define ANEMO_SELECT_PIN 2
 #define LED_PIN 26 
 #define DIFFERENCE_THRESHOLD 20
 
@@ -20,7 +20,6 @@ bool checkAnemometerConnection() {
     unsigned long startMillis = millis();
     unsigned long count = 0;
 
-    delay(10);
     FreqCount.begin(500);
     while (millis() - startMillis < TIMEOUT) {
         if (FreqCount.available()) {
@@ -50,7 +49,10 @@ response readAnemometers() {
       while(!FreqCount.available()){continue;}
       FreqCount.end();
       count1 = FreqCount.read();
-      
+      resp.data1 = count1 * 4.8; 
+    }
+    else{
+      resp.data1 = NAN;
     }
     
     digitalWrite(ANEMO_SELECT_PIN, LOW);
@@ -59,20 +61,10 @@ response readAnemometers() {
       while(!FreqCount.available()){continue;}
       FreqCount.end();
       count2 = FreqCount.read();
-      
+      resp.data2 = count2 * 4.8; 
     }
-    
-
-    if (connected1) {
-        resp.data1 = count1 * 4.8; 
-    } else {
-        resp.data1 = NAN; 
-    }
-
-    if (connected2) {
-        resp.data2 = count2 * 4.8; 
-    } else {
-        resp.data2 = NAN; 
+    else{
+      resp.data2 = NAN; 
     }
 
     if (count1 != NAN && count2 != NAN){

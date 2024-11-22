@@ -5,7 +5,6 @@
 
 #define REED_SWITCH1_PIN 3
 #define REED_SWITCH2_PIN 18
-
 #define LED_PIN 25
 
 void setupReedSwitches() {

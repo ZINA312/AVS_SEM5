@@ -22,6 +22,7 @@ void setupDHTSensors() {
 response readDHTSensors() {
     float hum0 = dht0.readHumidity();
     float hum1 = dht1.readHumidity();
+
     response resp;
     resp.ERR_LED_PIN = LED_PIN;
     resp.ErrorState = 0;
@@ -38,7 +39,6 @@ response readDHTSensors() {
       if (percentageDifference > DIFFERENCE_THRESHOLD) {
         resp.ErrorState = 1;
       }
-      
     }
     else{
       resp.ErrorRate = NAN;
@@ -60,9 +60,7 @@ response readDHTSensors() {
             resp.data1 = hum0; 
             resp.data2 = NAN; 
         }
-
         resp.ErrorState = 1;
-        return resp;
     }
 
     return resp;
