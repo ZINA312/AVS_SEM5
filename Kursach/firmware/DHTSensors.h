@@ -23,6 +23,7 @@ response readDHTSensors() {
     float hum0 = dht0.readHumidity();
     float hum1 = dht1.readHumidity();
 
+
     response resp;
     resp.ERR_LED_PIN = LED_PIN;
     resp.ErrorState = 0;
@@ -44,7 +45,6 @@ response readDHTSensors() {
       resp.ErrorRate = NAN;
     }
     
-
     if (isnan(hum0) && isnan(hum1)) {
       resp.data1 = NAN; 
       resp.data2 = NAN;
@@ -53,6 +53,7 @@ response readDHTSensors() {
     }
 
     if (isnan(hum0) || isnan(hum1)) {
+
         if (isnan(hum0)) {
             resp.data1 = NAN; 
             resp.data2 = hum1; 

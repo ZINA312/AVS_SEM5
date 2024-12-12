@@ -61,7 +61,7 @@ response readBMPSensors() {
       resp.data2 = NAN;
     }
 
-    if (P1 != NAN && P2 != NAN){
+    if (!sensor2Failed && !sensor1Failed){
       float difference = abs(P1 - P2);
       float average = (P1 + P2) / 2.0;
       float percentageDifference = (difference / average) * 100.0;

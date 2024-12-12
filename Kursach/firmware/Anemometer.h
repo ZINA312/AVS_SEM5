@@ -9,7 +9,7 @@
 #define DIFFERENCE_THRESHOLD 20
 
 const unsigned long TIMEOUT = 2000; 
-const unsigned long THRESHOLD = 0;  
+const unsigned long THRESHOLD = 5;  
 
 void setupAnemometer() {
     pinMode(ANEMO_SELECT_PIN, OUTPUT);
@@ -17,18 +17,16 @@ void setupAnemometer() {
 }
 
 bool checkAnemometerConnection() {
-    unsigned long startMillis = millis();
-    unsigned long count = 0;
-
-    FreqCount.begin(500);
-    while (millis() - startMillis < TIMEOUT) {
-        if (FreqCount.available()) {
-            FreqCount.end();
-            count += FreqCount.read();
-        }
-    }
-    
-    return count > THRESHOLD; 
+  unsigned long startMillis = millis();
+  unsigned long count = 0;
+  FreqCount.begin(500);
+  while (millis() - startMillis < TIMEOUT) {
+      if (FreqCount.available()) {
+          FreqCount.end();
+          count += FreqCount.read();
+      }
+  }
+  return count > THRESHOLD;
 }
 
 response readAnemometers() {
@@ -41,7 +39,7 @@ response readAnemometers() {
     bool connected1 = checkAnemometerConnection();
     digitalWrite(ANEMO_SELECT_PIN, LOW);
     bool connected2 = checkAnemometerConnection();
-    float count1 = 0, count2 = 0;
+    int count1 = 0, count2 = 0;
     
     digitalWrite(ANEMO_SELECT_PIN, HIGH);
     if (connected1) {
@@ -49,7 +47,7 @@ response readAnemometers() {
       while(!FreqCount.available()){continue;}
       FreqCount.end();
       count1 = FreqCount.read();
-      resp.data1 = count1 * 4.8; 
+      resp.data1 = count1 * 0.01; 
     }
     else{
       resp.data1 = NAN;
@@ -61,13 +59,13 @@ response readAnemometers() {
       while(!FreqCount.available()){continue;}
       FreqCount.end();
       count2 = FreqCount.read();
-      resp.data2 = count2 * 4.8; 
+      resp.data2 = count2 * 0.01; 
     }
     else{
       resp.data2 = NAN; 
     }
 
-    if (count1 != NAN && count2 != NAN){
+    if (connected1 && connected2 ){
       float difference = abs(count1 - count2);
       float average = (count1 + count2) / 2.0;
       float percentageDifference = (difference / average) * 100.0;
